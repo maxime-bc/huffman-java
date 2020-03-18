@@ -14,6 +14,9 @@ class Main implements Callable<Integer> {
     @Option(names = {"-o", "--output"}, description = "Output compressed string into a file instead of stdout")
     private File outputFile;
 
+    @Option(names = {"-u", "--uncompress"}, description = "Uncompress mode activated : uncompress input file/string")
+    private boolean uncompressMode;
+
     @picocli.CommandLine.ArgGroup(multiplicity = "1")
     InputExclusiveOptions inputExclusiveOptions;
 
@@ -41,8 +44,10 @@ class Main implements Callable<Integer> {
     @Override
     public Integer call() { // your business logic goes here...
 
+
         File inputFile = inputExclusiveOptions.inputFile;
         String inputString = inputExclusiveOptions.inputString;
+        String outputString = "";
 
         // for debug
         System.out.println("Input file = " + inputFile);
@@ -64,23 +69,29 @@ class Main implements Callable<Integer> {
             }
 
         }
-        // Compress input
-        StringOccurrencesCounter stringOccurrencesCounter = new StringOccurrencesCounter(inputString);
-        String compressedString = stringOccurrencesCounter.getOccurrences().toString();
+
+        if (uncompressMode) {
+            // Uncompress mode
+            outputString = "Uncompress mode";
+        } else {
+            // Compress mode
+            StringOccurrencesCounter stringOccurrencesCounter = new StringOccurrencesCounter(inputString);
+            outputString = stringOccurrencesCounter.getOccurrences().toString() + "compress mode";
+        }
 
         // TODO: place here huffman compression algorithm
 
         if (outputFile != null) {
             // Write result in a file
             try {
-                Files.write(Paths.get(outputFile.getPath()), compressedString.getBytes());
+                Files.write(Paths.get(outputFile.getPath()), outputString.getBytes());
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
 
         } else {
             // Print result in stdout
-            System.out.println(compressedString);
+            System.out.println(outputString);
         }
 
         return 0;
