@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = "huffman-java 0.0.1",
         description = "Compress a string or a text file using Huffman coding")
-class HuffmanCoding implements Callable<Integer> {
+class Main implements Callable<Integer> {
 
     @Option(names = {"-o", "--output"}, description = "Output compressed string into a file instead of stdout")
     private File outputFile;
@@ -34,7 +34,7 @@ class HuffmanCoding implements Callable<Integer> {
     // this example implements Callable, so parsing, error handling and handling user
     // requests for usage help or version help can be done with one line of code.
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new HuffmanCoding()).execute(args);
+        int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
     }
 
@@ -66,7 +66,9 @@ class HuffmanCoding implements Callable<Integer> {
         }
         // Compress input
         StringOccurrencesCounter stringOccurrencesCounter = new StringOccurrencesCounter(inputString);
-        String compressedString = stringOccurrencesCounter.getOccurrences();
+        String compressedString = stringOccurrencesCounter.getOccurrences().toString();
+
+        // TODO: place here huffman compression algorithm
 
         if (outputFile != null) {
             // Write result in a file
