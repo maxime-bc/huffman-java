@@ -1,7 +1,7 @@
 @picocli.CommandLine.Command(name = "parser", mixinStandardHelpOptions = true)
 public class CommandLineParser {
 
-    @picocli.CommandLine.ArgGroup(multiplicity = "1")
+    @picocli.CommandLine.ArgGroup(multiplicity = "0")
     Exclusive exclusive;
 
     static class Exclusive {

@@ -1,44 +1,36 @@
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-import java.io.IOException;
+import java.io.File;
+import java.math.BigInteger;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.util.concurrent.Callable;
 
-public class Main {
+@Command(name = "checksum", mixinStandardHelpOptions = true, version = "checksum 4.0",
+        description = "Prints the checksum (MD5 by default) of a file to STDOUT.")
+class CheckSum implements Callable<Integer> {
 
-    public static void main(String[] args) {
+    @Parameters(index = "0", description = "The file whose checksum to calculate.")
+    private File file;
 
-        CommandLineParser commandLineParser = new CommandLineParser();
-        picocli.CommandLine cmd = new picocli.CommandLine(commandLineParser);
+    @Option(names = {"-a", "--algorithm"}, description = "MD5, SHA-1, SHA-256, ...")
+    private String algorithm = "MD5";
 
-        try {
-            cmd.parseArgs(args);
-        } catch (CommandLine.MutuallyExclusiveArgsException ex) {
-            System.out.println(ex.getMessage());
-        }
+    // this example implements Callable, so parsing, error handling and handling user
+    // requests for usage help or version help can be done with one line of code.
+    public static void main(String... args) {
+        int exitCode = new CommandLine(new CheckSum()).execute(args);
+        System.exit(exitCode);
+    }
 
-        String inputFile = commandLineParser.exclusive.inputFile;
-        String inputString = commandLineParser.exclusive.inputString;
-
-        if (inputFile != null) {
-            // An input file was provided, so we store its content into `inputString`
-
-            Path path = Paths.get(inputFile);
-
-            if (Files.exists(path) && Files.isRegularFile(path)) {
-                try {
-                    inputString = Files.readString(path);
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
-            } else {
-                System.out.println(inputFile + " does not exists.");
-                System.exit(1);
-            }
-        }
-        StringOccurrencesCounter stringOccurrencesCounter = new StringOccurrencesCounter(inputString);
-        String res = stringOccurrencesCounter.getOccurrences();
-        System.out.println(res);
+    @Override
+    public Integer call() throws Exception { // your business logic goes here...
+        byte[] fileContents = Files.readAllBytes(file.toPath());
+        byte[] digest = MessageDigest.getInstance(algorithm).digest(fileContents);
+        System.out.printf("%0" + (digest.length*2) + "x%n", new BigInteger(1, digest));
+        return 0;
     }
 }
