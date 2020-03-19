@@ -4,6 +4,6 @@
 
 class HuffmanNode {
     HuffmanNode leftChild, rightChild;
-    Integer occurrence;
-    Character character;
+    int occurrence;
+    char character;
 }

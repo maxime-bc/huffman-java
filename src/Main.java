@@ -5,6 +5,7 @@ import picocli.CommandLine.Option;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.concurrent.Callable;
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = "huffman-java 0.0.1",
@@ -90,11 +91,12 @@ class Main implements Callable<Integer> {
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
-
-        } else {
-            // Print result in stdout
-            System.out.println(outputString);
         }
+
+        // Print result in stdout
+        System.out.println("Raw text = " + huffman.uncompress());
+        System.out.println("Compressed text = " + outputString);
+        System.out.println("Space gain = " + new DecimalFormat("#.#").format(huffman.spaceGain()) + " %.");
 
         return 0;
     }

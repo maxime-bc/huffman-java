@@ -7,6 +7,8 @@ public class Huffman {
     PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
     TreeMap<Character, String> charactersCode = new TreeMap<>();
     String text;
+    String compressedText = "";
+    String uncompressedText = "";
 
     public Huffman(String text) {
         this.text = text;
@@ -15,8 +17,6 @@ public class Huffman {
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
         printCharactersCode();
-
-        //System.out.println(uncompress(compress()));
     }
 
     /**
@@ -26,8 +26,8 @@ public class Huffman {
     private void generateHuffmanNodes() {
 
         for (Map.Entry<Character, Integer> entry : getCharactersOccurrences(text).entrySet()) {
-            Character character = entry.getKey();
-            Integer occurrence = entry.getValue();
+            char character = entry.getKey();
+            int occurrence = entry.getValue();
 
             HuffmanNode huffmanNode = new HuffmanNode();
             huffmanNode.occurrence = occurrence;
@@ -47,12 +47,12 @@ public class Huffman {
 
         Map<Character, Integer> map = new TreeMap<>();
 
-        for (char c : string.toCharArray()) {
+        for (char character : string.toCharArray()) {
 
-            if (!map.containsKey(c)) {
-                map.put(c, 1);
+            if (!map.containsKey(character)) {
+                map.put(character, 1);
             } else {
-                map.put(c, map.get(c) + 1);
+                map.put(character, map.get(character) + 1);
             }
         }
 
@@ -107,12 +107,12 @@ public class Huffman {
     }
 
     /**
-     * Prints huffman code for each character.
+     * Prints Huffman code for each character.
      */
 
     private void printCharactersCode() {
-        System.out.println("--- Printing Codes ---");
-        charactersCode.forEach((key, value) -> System.out.println("'" + key + "' : " + value));
+        System.out.println("----- Characters codes -----");
+        charactersCode.forEach((character, occurrence) -> System.out.println("'" + character + "' -> " + occurrence));
     }
 
     /**
@@ -122,33 +122,53 @@ public class Huffman {
      */
 
     public String compress() {
-        StringBuilder compressedText = new StringBuilder();
-        for (int i = 0; i < text.length(); i++)
-            compressedText.append(charactersCode.get(text.charAt(i)));
+        StringBuilder compressedStringBuilder = new StringBuilder();
 
-        return compressedText.toString();
+        for (int i = 0; i < text.length(); i++) {
+            compressedStringBuilder.append(charactersCode.get(text.charAt(i)));
+        }
+
+        compressedText = compressedStringBuilder.toString();
+        return compressedText;
     }
 
-/*    public String uncompress(String compressedText) {
+    /**
+     * Uncompress text using Huffman tree.
+     *
+     * @return Uncompressed text.
+     */
 
-        StringBuilder uncompressedText = new StringBuilder();
-        HuffmanNode node = huffmanNodes.peek();
+    public String uncompress() {
+        StringBuilder uncompressedStringBuilder = new StringBuilder();
+        HuffmanNode rootNode = huffmanNodes.peek();
 
-        for (int i = 0; i < text.length(); ) {
-            HuffmanNode tmpNode = node;
-            while (tmpNode.leftChild != null && tmpNode.rightChild != null && i < compressedText.length()) {
+        for (int i = 0; i < compressedText.length(); ) {
+            HuffmanNode currentNode = rootNode;
+
+            while (currentNode.leftChild != null && currentNode.rightChild != null
+                    && i < compressedText.length()) {
+
                 if (compressedText.charAt(i) == '1') {
-                    tmpNode = tmpNode.rightChild;
+                    currentNode = currentNode.rightChild;
                 } else {
-                    tmpNode = tmpNode.leftChild;
+                    currentNode = currentNode.leftChild;
                 }
+
                 i++;
             }
-
-            uncompressedText.append(tmpNode.character);
-
+            uncompressedStringBuilder.append(currentNode.character);
         }
-        return uncompressedText.toString();
-    }*/
+
+        uncompressedText = uncompressedStringBuilder.toString();
+        return uncompressedText;
+    }
+
+    public double spaceGain() {
+        int textBitsSize = text.length() * Character.BYTES * 8;
+        int compressedTextBitsSize = compressedText.length();
+
+       return ((compressedTextBitsSize * 1.0) / textBitsSize) * 100;
+
+    }
 }
 
