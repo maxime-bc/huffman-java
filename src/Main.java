@@ -49,10 +49,10 @@ class Main implements Callable<Integer> {
         String inputString = inputExclusiveOptions.inputString;
         String outputString = "";
 
-        // for debug
+/*        // for debug
         System.out.println("Input file = " + inputFile);
         System.out.println("Input string = " + inputString);
-        System.out.println("Output string = " + outputFile);
+        System.out.println("Output string = " + outputFile);*/
 
         if (inputFile != null) {
             // A file was provided as an input
@@ -70,16 +70,18 @@ class Main implements Callable<Integer> {
 
         }
 
+//        System.out.println("Input string = " + inputString);
+
+        Huffman huffman = new Huffman(inputString);
+
         if (uncompressMode) {
             // Uncompress mode
-            outputString = "Uncompress mode";
+            //outputString = huffman.uncompress();
+
         } else {
             // Compress mode
-            StringOccurrencesCounter stringOccurrencesCounter = new StringOccurrencesCounter(inputString);
-            outputString = stringOccurrencesCounter.getOccurrences().toString() + "compress mode";
+            outputString = huffman.compress();
         }
-
-        // TODO: place here huffman compression algorithm
 
         if (outputFile != null) {
             // Write result in a file
