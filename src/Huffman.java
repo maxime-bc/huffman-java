@@ -179,7 +179,13 @@ public class Huffman {
         return uncompressedText;
     }
 
-    public double spaceGain() {
+    /**
+     * Computes the storage gain from compression with Huffman algorithm
+     *
+     * @return A percentage representing the storage gain.
+     */
+
+    public double compressionGain() {
         int textBitsSize = text.length() * Character.BYTES * 8;
         int compressedTextBitsSize = compressedText.length();
 

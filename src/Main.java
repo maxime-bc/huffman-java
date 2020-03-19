@@ -12,11 +12,15 @@ import java.util.concurrent.Callable;
         description = "Compress a string or a text file using Huffman coding")
 class Main implements Callable<Integer> {
 
-    @Option(names = {"-o", "--output"}, description = "Output compressed string into a file instead of stdout")
-    private File outputFile;
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new Main()).execute(args);
+        System.exit(exitCode);
+    }
 
-    @Option(names = {"-u", "--uncompress"}, description = "Uncompress mode activated : uncompress input file/string")
-    private boolean uncompressMode;
+    // Command line options management with picocli
+
+    @Option(names = {"-o", "--output"}, description = "Output compressed string into a file.")
+    private File outputFile;
 
     @picocli.CommandLine.ArgGroup(multiplicity = "1")
     InputExclusiveOptions inputExclusiveOptions;
@@ -35,26 +39,12 @@ class Main implements Callable<Integer> {
         String inputString;
     }
 
-    // this example implements Callable, so parsing, error handling and handling user
-    // requests for usage help or version help can be done with one line of code.
-    public static void main(String[] args) {
-        int exitCode = new CommandLine(new Main()).execute(args);
-        System.exit(exitCode);
-    }
-
     @Override
-    public Integer call() { // your business logic goes here...
-
+    public Integer call() { // this method is called when the program is launched with valid parameters/options
 
         File inputFile = inputExclusiveOptions.inputFile;
         String inputString = inputExclusiveOptions.inputString;
         String outputString = "";
-
-        /*
-        // for debug
-        System.out.println("Input file = " + inputFile);
-        System.out.println("Input string = " + inputString);
-        System.out.println("Output string = " + outputFile);*/
 
         if (inputFile != null) {
             // A file was provided as an input
@@ -69,21 +59,10 @@ class Main implements Callable<Integer> {
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
-
         }
-
-        //System.out.println("Input string = " + inputString);
 
         Huffman huffman = new Huffman(inputString);
-
-        if (uncompressMode) {
-            // Uncompress mode
-            //outputString = huffman.uncompress();
-
-        } else {
-            // Compress mode
-            outputString = huffman.compress();
-        }
+        outputString = huffman.compress();
 
         if (outputFile != null) {
             // Write result in a file
@@ -98,7 +77,8 @@ class Main implements Callable<Integer> {
         System.out.println("Raw text = \n'" + inputString + "'\n");
         System.out.println("Compressed text = \n'" + outputString + "'\n");
         System.out.println("Uncompressed text = \n'" + huffman.uncompress() + "'\n");
-        System.out.println("Storage gain = " + new DecimalFormat("#.#").format(huffman.spaceGain()) + " %.\n");
+        System.out.println("Compression gain = " + new DecimalFormat("#.#")
+                .format(huffman.compressionGain()) + " %.\n");
 
         return 0;
     }
