@@ -50,7 +50,8 @@ class Main implements Callable<Integer> {
         String inputString = inputExclusiveOptions.inputString;
         String outputString = "";
 
-/*        // for debug
+        /*
+        // for debug
         System.out.println("Input file = " + inputFile);
         System.out.println("Input string = " + inputString);
         System.out.println("Output string = " + outputFile);*/
@@ -71,7 +72,7 @@ class Main implements Callable<Integer> {
 
         }
 
-//        System.out.println("Input string = " + inputString);
+        //System.out.println("Input string = " + inputString);
 
         Huffman huffman = new Huffman(inputString);
 
@@ -94,9 +95,10 @@ class Main implements Callable<Integer> {
         }
 
         // Print result in stdout
-        System.out.println("Raw text = " + huffman.uncompress());
-        System.out.println("Compressed text = " + outputString);
-        System.out.println("Space gain = " + new DecimalFormat("#.#").format(huffman.spaceGain()) + " %.");
+        System.out.println("Raw text = \n'" + inputString + "'\n");
+        System.out.println("Compressed text = \n'" + outputString + "'\n");
+        System.out.println("Uncompressed text = \n'" + huffman.uncompress() + "'\n");
+        System.out.println("Storage gain = " + new DecimalFormat("#.#").format(huffman.spaceGain()) + " %.\n");
 
         return 0;
     }

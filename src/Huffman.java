@@ -113,6 +113,7 @@ public class Huffman {
     private void printCharactersCode() {
         System.out.println("----- Characters codes -----");
         charactersCode.forEach((character, occurrence) -> System.out.println("'" + character + "' -> " + occurrence));
+        System.out.println("\n");
     }
 
     /**
