@@ -6,6 +6,8 @@ public class Huffman {
 
     PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
     TreeMap<Character, String> charactersCode = new TreeMap<>();
+    TreeMap<Character, Integer> charactersOccurrence = new TreeMap<>();
+
     String text;
     String compressedText = "";
     String uncompressedText = "";
@@ -16,6 +18,7 @@ public class Huffman {
         generateHuffmanNodes();
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
+        printCharactersOccurrence();
         printCharactersCode();
     }
 
@@ -24,6 +27,8 @@ public class Huffman {
      */
 
     private void generateHuffmanNodes() {
+
+        charactersOccurrence = getCharactersOccurrences(text);
 
         for (Map.Entry<Character, Integer> entry : getCharactersOccurrences(text).entrySet()) {
             char character = entry.getKey();
@@ -43,9 +48,9 @@ public class Huffman {
      * @return A map (= a dictionary) associating each character to the number of its occurrences in the string.
      */
 
-    private Map<Character, Integer> getCharactersOccurrences(String string) {
+    private TreeMap<Character, Integer> getCharactersOccurrences(String string) {
 
-        Map<Character, Integer> map = new TreeMap<>();
+        TreeMap<Character, Integer> map = new TreeMap<>();
 
         for (char character : string.toCharArray()) {
 
@@ -112,7 +117,17 @@ public class Huffman {
 
     private void printCharactersCode() {
         System.out.println("----- Characters codes -----");
-        charactersCode.forEach((character, occurrence) -> System.out.println("'" + character + "' -> " + occurrence));
+        charactersCode.forEach((character, code) -> System.out.println("'" + character + "' -> " + code));
+        System.out.println("\n");
+    }
+
+    /**
+     * Prints Huffman occurrences for each character.
+     */
+
+    private void printCharactersOccurrence() {
+        System.out.println("----- Characters occurrences -----");
+        charactersOccurrence.forEach((character, occurrence) -> System.out.println("'" + character + "' -> " + occurrence));
         System.out.println("\n");
     }
 
@@ -168,7 +183,7 @@ public class Huffman {
         int textBitsSize = text.length() * Character.BYTES * 8;
         int compressedTextBitsSize = compressedText.length();
 
-       return ((compressedTextBitsSize * 1.0) / textBitsSize) * 100;
+        return ((compressedTextBitsSize * 1.0) / textBitsSize) * 100;
 
     }
 }
