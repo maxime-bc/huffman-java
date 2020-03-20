@@ -2,6 +2,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
+/* https://web.stanford.edu/class/archive/cs/cs106b/cs106b.1172/assn/huffman.html */
+
 public class Huffman {
 
     PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
@@ -30,7 +32,7 @@ public class Huffman {
 
         charactersOccurrence = getCharactersOccurrences(text);
 
-        for (Map.Entry<Character, Integer> entry : getCharactersOccurrences(text).entrySet()) {
+        for (Map.Entry<Character, Integer> entry : charactersOccurrence.entrySet()) {
             char character = entry.getKey();
             int occurrence = entry.getValue();
 
@@ -182,15 +184,12 @@ public class Huffman {
     /**
      * Computes the storage gain from compression with Huffman algorithm
      *
-     * @return A percentage representing the storage gain.
+     * @return A percentage representing the compression gain.
      */
 
     public double compressionGain() {
-        int textBitsSize = text.length() * Character.BYTES * 8;
-        int compressedTextBitsSize = compressedText.length();
-
-        return ((compressedTextBitsSize * 1.0) / textBitsSize) * 100;
-
+        double textBitsSize = text.length() * Character.BYTES * 8.0;
+        return (1 - ((compressedText.length()) / textBitsSize)) * 100;
     }
 }
 

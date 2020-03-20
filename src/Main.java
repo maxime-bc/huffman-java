@@ -74,9 +74,11 @@ class Main implements Callable<Integer> {
         }
 
         // Print result in stdout
-        System.out.println("Raw text = \n'" + inputString + "'\n");
-        System.out.println("Compressed text = \n'" + outputString + "'\n");
-        System.out.println("Uncompressed text = \n'" + huffman.uncompress() + "'\n");
+        System.out.println("----- Raw text -----\n'" + inputString
+                + "' (" + inputString.length() * Character.BYTES * 8 + " bits)\n");
+        System.out.println("----- Compressed text -----\n'" + outputString
+                + "' (" + outputString.length() + " bits)\n");
+        System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress() + "'\n");
         System.out.println("Compression gain = " + new DecimalFormat("#.#")
                 .format(huffman.compressionGain()) + " %.\n");
 
