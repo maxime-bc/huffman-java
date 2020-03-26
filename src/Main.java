@@ -44,7 +44,12 @@ class Main implements Callable<Integer> {
 
         File inputFile = inputExclusiveOptions.inputFile;
         String inputString = inputExclusiveOptions.inputString;
-        String outputString = "";
+        String outputString;
+
+        if (inputString.isEmpty()) {
+            System.out.println("An empty string/file cannot be compressed.");
+            return 1;
+        }
 
         if (inputFile != null) {
             // A file was provided as an input
@@ -75,12 +80,13 @@ class Main implements Callable<Integer> {
 
         // Print result in stdout
         System.out.println("----- Raw text -----\n'" + inputString
-                + "' (" + inputString.length() * Character.BYTES * 8 + " bits)\n");
+                + "' (" + (inputString.length() + 1) * Character.BYTES * 8 + " bits)\n");
+        // we add 1 to input string size because Huffman adds a EOF char before compressing the string
         System.out.println("----- Compressed text -----\n'" + outputString
                 + "' (" + outputString.length() + " bits)\n");
         System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress() + "'\n");
-        System.out.println("Compression gain = " + new DecimalFormat("#.#")
-                .format(huffman.compressionGain()) + " %.\n");
+        System.out.println("Volume gain = " + new DecimalFormat("#.#")
+                .format(huffman.compressionGain()) + "%.\n");
 
         return 0;
     }

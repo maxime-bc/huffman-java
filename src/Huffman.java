@@ -2,10 +2,9 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
-/* https://web.stanford.edu/class/archive/cs/cs106b/cs106b.1172/assn/huffman.html */
-
 public class Huffman {
 
+    private static final int ETX = 3; //End of text character used as EOF
     PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
     TreeMap<Character, String> charactersCode = new TreeMap<>();
     TreeMap<Character, Integer> charactersOccurrence = new TreeMap<>();
@@ -15,13 +14,29 @@ public class Huffman {
     String uncompressedText = "";
 
     public Huffman(String text) {
-        this.text = text;
+        this.text = addExtChar(text);
 
         generateHuffmanNodes();
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
         printCharactersOccurrence();
         printCharactersCode();
+    }
+
+    /**
+     * Adds a character to a string marking the end of the string
+     *
+     * @param str the string for which we need to add a character marking its end.
+     * @return the string with the extra character.
+     */
+
+    private String addExtChar(String str) {
+        int len = str.length();
+        char[] updatedArr = new char[len + 1];
+        str.getChars(0, len, updatedArr, 0);
+        updatedArr[len] = (char) ETX;
+        str.getChars(len, len, updatedArr, len + 1);
+        return new String(updatedArr);
     }
 
     /**
@@ -75,16 +90,25 @@ public class Huffman {
      */
 
     private void generateTree() {
+        HuffmanNodeComparator huffmanNodeComparator = new HuffmanNodeComparator();
 
         while (huffmanNodes.size() > 1) {
 
-            HuffmanNode leftChild = huffmanNodes.poll();
-            HuffmanNode rightChild = huffmanNodes.poll();
+            HuffmanNode childOne = huffmanNodes.poll();
+            HuffmanNode childTwo = huffmanNodes.poll();
             HuffmanNode parent = new HuffmanNode();
 
-            parent.leftChild = leftChild;
-            parent.rightChild = rightChild;
-            parent.occurrence = leftChild.occurrence + rightChild.occurrence;
+            int comparisonRes = huffmanNodeComparator.compare(childOne, childTwo);
+            if (comparisonRes > 0) {
+                parent.leftChild = childTwo;
+                parent.rightChild = childOne;
+            } else {
+                parent.leftChild = childOne;
+                parent.rightChild = childTwo;
+            }
+
+            parent.character = parent.rightChild.character;
+            parent.occurrence = childOne.occurrence + childTwo.occurrence;
 
             huffmanNodes.add(parent);
         }
@@ -129,7 +153,8 @@ public class Huffman {
 
     private void printCharactersOccurrence() {
         System.out.println("----- Characters occurrences -----");
-        charactersOccurrence.forEach((character, occurrence) -> System.out.println("'" + character + "' -> " + occurrence));
+        charactersOccurrence.forEach((character, occurrence) ->
+                System.out.println("'" + character + "' (" + (int) character + ")" + " -> " + occurrence));
         System.out.println("\n");
     }
 
@@ -161,6 +186,7 @@ public class Huffman {
         HuffmanNode rootNode = huffmanNodes.peek();
 
         for (int i = 0; i < compressedText.length(); ) {
+
             HuffmanNode currentNode = rootNode;
 
             while (currentNode.leftChild != null && currentNode.rightChild != null
@@ -174,6 +200,11 @@ public class Huffman {
 
                 i++;
             }
+
+            if ((int) currentNode.character == ETX) {
+                break;
+            }
+
             uncompressedStringBuilder.append(currentNode.character);
         }
 
@@ -188,7 +219,7 @@ public class Huffman {
      */
 
     public double compressionGain() {
-        double textBitsSize = text.length() * Character.BYTES * 8.0;
+        double textBitsSize = (text.length()) * Character.BYTES * 8.0;
         return (1 - ((compressedText.length()) / textBitsSize)) * 100;
     }
 }
