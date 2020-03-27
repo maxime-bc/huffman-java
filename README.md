@@ -10,10 +10,7 @@ Compress a string or a text file using Huffman coding.
 Main (-f=<inputFile> | -s=<inputString>) [-hV] [-o=<outputFile>]
 
   -s, --string=<inputString>  Take a string as an input.
-  -f, --file=<inputFile>      Take a text file as an input.
-  
-  -o, --output=<outputFile>   Output compressed string into a file.
-  
+  -f, --file=<inputFile>      Take a text file as an input.  
   -h, --help                  Show this help message and exit.
   -V, --version               Print version information and exit.
  
