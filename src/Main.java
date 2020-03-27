@@ -19,9 +19,6 @@ class Main implements Callable<Integer> {
 
     // Command line options management with picocli
 
-    @Option(names = {"-o", "--output"}, description = "Output compressed string into a file.")
-    private File outputFile;
-
     @picocli.CommandLine.ArgGroup(multiplicity = "1")
     InputExclusiveOptions inputExclusiveOptions;
 
@@ -69,15 +66,6 @@ class Main implements Callable<Integer> {
         Huffman huffman = new Huffman(inputString);
         outputString = huffman.compress();
 
-        if (outputFile != null) {
-            // Write result in a file
-            try {
-                Files.write(Paths.get(outputFile.getPath()), outputString.getBytes());
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-
         // Print result in stdout
         System.out.println("----- Raw text -----\n'" + inputString
                 + "' (" + (inputString.length() + 1) * Character.BYTES * 8 + " bits)\n");
@@ -86,7 +74,7 @@ class Main implements Callable<Integer> {
                 + "' (" + outputString.length() + " bits)\n");
         System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress() + "'\n");
         System.out.println("Volume gain = " + new DecimalFormat("#.#")
-                .format(huffman.compressionGain()) + "%.\n");
+                .format(huffman.getVolumeGain()) + "%.\n");
 
         return 0;
     }

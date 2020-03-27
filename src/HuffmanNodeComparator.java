@@ -1,23 +1,26 @@
 import java.util.Comparator;
 
 /**
- * This class is used by a PriorityQueue to determine the node with the lower value.
+ * This class is used by the priority queue to determine the order in which the nodes are collected.
  */
 
 class HuffmanNodeComparator implements Comparator<HuffmanNode> {
 
     /**
-     * Compare the values of two Huffman Nodes
+     * Compare two Huffman Nodes.
+     * <p>
+     * Nodes with the smallest occurrences have priority.
+     * If nodes have the same occurrence, the priority goes to the one with a character having the smallest ascii code.
      *
      * @param x Huffman Node 1
      * @param y Huffman Node 2
-     * @return the difference of the values of the two nodes.
+     * @return the difference of the comparison of the two nodes.
      */
 
     public int compare(HuffmanNode x, HuffmanNode y) {
-        // If occurrences are equals, we compare characters ascii code
+        // If occurrences are equals, we compare character's ascii code.
         if (x.occurrence == y.occurrence) {
-            return (int) x.character - (int) y.character ;
+            return (int) x.character - (int) y.character;
         }
         return x.occurrence - y.occurrence;
     }

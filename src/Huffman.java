@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
@@ -6,28 +7,33 @@ public class Huffman {
 
     private static final int ETX = 3; //End of text character used as EOF
     PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
-    TreeMap<Character, String> charactersCode = new TreeMap<>();
-    TreeMap<Character, Integer> charactersOccurrence = new TreeMap<>();
+    HashMap<Character, String> charactersCode = new HashMap<>();
+    HashMap<Character, Integer> charactersOccurrence = new HashMap<>();
 
     String text;
     String compressedText = "";
     String uncompressedText = "";
 
+    /**
+     * Generate an Huffman tree with the text given in input.
+     * The character used to mark the end of a file is EXT (ascii code = 3).
+     *
+     * @param text input string on which the Huffman tree will be based.
+     */
+
     public Huffman(String text) {
         this.text = addExtChar(text);
-
         generateHuffmanNodes();
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
-        printCharactersOccurrence();
-        printCharactersCode();
+        printCharactersOccurrenceAndCode();
     }
 
     /**
-     * Adds a character to a string marking the end of the string
+     * Adds the character ETX (End of TeXt) to a string, marking its end.
      *
-     * @param str the string for which we need to add a character marking its end.
-     * @return the string with the extra character.
+     * @param str the string for which we need to add the ETX character.
+     * @return the string with the EXT character added.
      */
 
     private String addExtChar(String str) {
@@ -40,7 +46,7 @@ public class Huffman {
     }
 
     /**
-     * Populates all characters and their occurrence number inside Huffman nodes.
+     * Generate a node for each character and add all the nodes to the priority queue.
      */
 
     private void generateHuffmanNodes() {
@@ -59,15 +65,15 @@ public class Huffman {
     }
 
     /**
-     * Obtains the number of occurrences of the characters constituting a string.
+     * Obtains the number of occurrences of each character constituting a string.
      *
      * @param string String for which we need to determine the occurrences of each of its characters.
-     * @return A map (= a dictionary) associating each character to the number of its occurrences in the string.
+     * @return An association between each character and the number of its occurrences in the input string.
      */
 
-    private TreeMap<Character, Integer> getCharactersOccurrences(String string) {
+    private HashMap<Character, Integer> getCharactersOccurrences(String string) {
 
-        TreeMap<Character, Integer> map = new TreeMap<>();
+        HashMap<Character, Integer> map = new HashMap<>();
 
         for (char character : string.toCharArray()) {
 
@@ -82,11 +88,12 @@ public class Huffman {
     }
 
     /**
-     * Generates a tree with nodes stored into the priority queue.
+     * Generates a tree with all the nodes stored inside the priority queue.
      * <p>
-     * This function collects in the priority queue the two Huffman nodes with the smallest occurrence.
-     * Then, a new parent node linked to these two nodes is created and added to the priority queue,
-     * until only one node remains. This remaining node is the root of the Huffman tree.
+     * This function collects the two Huffman nodes with the smallest occurrence
+     * and with the smallest ascii codes from the priority queue.
+     * Then, a new parent node for these two nodes is created and added to the priority queue,
+     * until only one node remains, the root of the Huffman tree.
      */
 
     private void generateTree() {
@@ -138,28 +145,19 @@ public class Huffman {
     }
 
     /**
-     * Prints Huffman code for each character.
+     * Print characters presents in the input string, their ascii code, their occurrence number and their generated code.
      */
 
-    private void printCharactersCode() {
-        System.out.println("----- Characters codes -----");
-        charactersCode.forEach((character, code) -> System.out.println("'" + character + "' -> " + code));
-        System.out.println("\n");
-    }
-
-    /**
-     * Prints Huffman occurrences for each character.
-     */
-
-    private void printCharactersOccurrence() {
-        System.out.println("----- Characters occurrences -----");
+    private void printCharactersOccurrenceAndCode() {
+        System.out.println("char (ascii value) -> occurrence -> code");
         charactersOccurrence.forEach((character, occurrence) ->
-                System.out.println("'" + character + "' (" + (int) character + ")" + " -> " + occurrence));
+                System.out.println("'" + character + "' (" + (int) character + ")" +
+                        " -> " + occurrence + " -> " + charactersCode.get(character)));
         System.out.println("\n");
     }
 
     /**
-     * Compress text using Huffman tree.
+     * Compress text using the Huffman tree.
      *
      * @return Compressed text.
      */
@@ -176,7 +174,7 @@ public class Huffman {
     }
 
     /**
-     * Uncompress text using Huffman tree.
+     * Uncompress text using the Huffman tree.
      *
      * @return Uncompressed text.
      */
@@ -189,8 +187,7 @@ public class Huffman {
 
             HuffmanNode currentNode = rootNode;
 
-            while (currentNode.leftChild != null && currentNode.rightChild != null
-                    && i < compressedText.length()) {
+            while (currentNode.leftChild != null && currentNode.rightChild != null && i < compressedText.length()) {
 
                 if (compressedText.charAt(i) == '1') {
                     currentNode = currentNode.rightChild;
@@ -201,6 +198,7 @@ public class Huffman {
                 i++;
             }
 
+            // if the character EXT is read, we exit the loop because the end of the string was reached.
             if ((int) currentNode.character == ETX) {
                 break;
             }
@@ -213,12 +211,12 @@ public class Huffman {
     }
 
     /**
-     * Computes the storage gain from compression with Huffman algorithm
+     * Computes the volume gain from compression with the Huffman algorithm.
      *
      * @return A percentage representing the compression gain.
      */
 
-    public double compressionGain() {
+    public double getVolumeGain() {
         double textBitsSize = (text.length()) * Character.BYTES * 8.0;
         return (1 - ((compressedText.length()) / textBitsSize)) * 100;
     }
