@@ -7,7 +7,7 @@ Compress a string or a text file using Huffman coding.
  ## Usage
  
  ```bash
-Main (-f=<inputFile> | -s=<inputString>) [-hV] [-o=<outputFile>]
+Main (-f=<inputFile> | -s=<inputString>) [-hV]
 
   -s, --string=<inputString>  Take a string as an input.
   -f, --file=<inputFile>      Take a text file as an input.  
