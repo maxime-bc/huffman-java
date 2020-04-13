@@ -1,5 +1,6 @@
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+
 import java.util.BitSet;
 
 import java.io.*;
@@ -65,7 +66,13 @@ class Main implements Callable<Integer> {
         Huffman huffman = new Huffman(inputString);
         outputString = huffman.compress();
 
-        HuffmanCodesIO.writeHuffmanCharactersFrequency(huffman.charactersFrequency, huffman.text, "test");
+        StringBuilder compressedString = new StringBuilder("11110000111100001111");
+        if ((compressedString.length() % 8) != 0) {
+            int tmp = compressedString.length() % 8;
+            compressedString.append("0".repeat(Math.max(0, 8 - tmp)));
+        }
+
+        HuffmanCodesIO.writeHuffmanCharactersFrequency(huffman.charactersFrequency, compressedString.toString(), "test");
         HuffmanCodesIO.readHuffmanCharactersFrequency("test");
 
         // Print result in stdout

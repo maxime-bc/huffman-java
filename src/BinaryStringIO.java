@@ -24,7 +24,7 @@ public class BinaryStringIO {
         StringBuilder binaryStringBuilder = new StringBuilder();
         BitSet set = BitSet.valueOf(bytesArray);
 
-        for (int i = 0; i <= set.length(); i++) {
+        for (int i = 0; i <= bytesArray.length*8-1; i++) {
             if (set.get(i)) {
                 binaryStringBuilder.append("1");
             } else {
