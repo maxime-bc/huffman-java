@@ -1,5 +1,6 @@
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import java.util.BitSet;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -64,6 +65,9 @@ class Main implements Callable<Integer> {
         Huffman huffman = new Huffman(inputString);
         outputString = huffman.compress();
 
+        HuffmanCodesIO.writeHuffmanCharactersFrequency(huffman.charactersFrequency, huffman.text, "test");
+        HuffmanCodesIO.readHuffmanCharactersFrequency("test");
+
         // Print result in stdout
         System.out.println("----- Raw text -----\n'" + inputString
                 + "' (" + (inputString.length() + 1) * Character.BYTES * 8 + " bits)\n");
@@ -76,4 +80,15 @@ class Main implements Callable<Integer> {
 
         return 0;
     }
+
+    private static BitSet fromString(String binary) {
+        BitSet bitset = new BitSet(binary.length());
+        for (int i = 0; i < binary.length(); i++) {
+            if (binary.charAt(i) == '1') {
+                bitset.set(i);
+            }
+        }
+        return bitset;
+    }
+
 }

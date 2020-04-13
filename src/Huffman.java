@@ -1,14 +1,13 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.TreeMap;
 
 public class Huffman {
 
     private static final int ETX = 3; //End of text character used as EOF
     PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
     HashMap<Character, String> charactersCode = new HashMap<>();
-    HashMap<Character, Integer> charactersOccurrence = new HashMap<>();
+    HashMap<Character, Integer> charactersFrequency = new HashMap<>();
 
     String text;
     String compressedText = "";
@@ -51,9 +50,9 @@ public class Huffman {
 
     private void generateHuffmanNodes() {
 
-        charactersOccurrence = getCharactersOccurrences(text);
+        charactersFrequency = getCharactersOccurrences(text);
 
-        for (Map.Entry<Character, Integer> entry : charactersOccurrence.entrySet()) {
+        for (Map.Entry<Character, Integer> entry : charactersFrequency.entrySet()) {
             char character = entry.getKey();
             int occurrence = entry.getValue();
 
@@ -150,7 +149,7 @@ public class Huffman {
 
     private void printCharactersOccurrenceAndCode() {
         System.out.println("char (ascii value) -> occurrence -> code");
-        charactersOccurrence.forEach((character, occurrence) ->
+        charactersFrequency.forEach((character, occurrence) ->
                 System.out.println("'" + character + "' (" + (int) character + ")" +
                         " -> " + occurrence + " -> " + charactersCode.get(character)));
         System.out.println("\n");
