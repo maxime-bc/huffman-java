@@ -41,11 +41,6 @@ class Main implements Callable<Integer> {
         String inputString = inputExclusiveOptions.inputString;
         String outputString;
 
-        if (inputString.isEmpty()) {
-            System.out.println("An empty string/file cannot be compressed.");
-            return 1;
-        }
-
         if (inputFile != null) {
             // A file was provided as an input
 
@@ -59,25 +54,30 @@ class Main implements Callable<Integer> {
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
+        } else {
+            // A string was provided as an input
+            if (inputString.isEmpty()) {
+                System.out.println("An empty string/file cannot be compressed.");
+                return 1;
+            }
         }
 
         Huffman huffman = new Huffman(inputString);
         outputString = huffman.compress();
 
-//        HuffmanIO.writeHuffman(new HuffmanAttributes(huffman.getCharactersFrequency(), outputString), "test");
-//        HuffmanAttributes readHuffmanAttributes = HuffmanIO.readHuffman("test");
-//
-//        Huffman huffman2 = new Huffman(readHuffmanAttributes.getCharactersFrequency());
-//        String uncompressedString = huffman2.uncompress(readHuffmanAttributes.getCompressedString());
+        HuffmanIO.writeHuffman(new HuffmanAttributes(huffman.getCharactersFrequency(), outputString), "test");
+        HuffmanAttributes readHuffmanAttributes = HuffmanIO.readHuffman("test");
+
+        Huffman huffman2 = new Huffman(readHuffmanAttributes.getCharactersFrequency());
+        String uncompressedString = huffman2.uncompress(readHuffmanAttributes.getCompressedString());
 
         // Print result in stdout
-        System.out.println("----- Raw text -----\n'" + inputString
-                + "' (" + (inputString.length() + 1) * Character.BYTES * 8 + " bits)\n");
+/*        System.out.println("----- Raw text -----\n'" + inputString + "' (" + (inputString.length() + 1) * Character.BYTES * 8 + " bits)\n");
         // we add 1 to input string size because Huffman adds a EOF char before compressing the string
-        System.out.println("----- Compressed text -----\n'" + outputString
-                + "' (" + outputString.length() + " bits)\n");
-        System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress(outputString) + "'\n");
-        //System.out.println("Volume gain = " + new DecimalFormat("#.#").format(huffman.getVolumeGain()) + "%.\n");
+        System.out.println("----- Compressed text -----\n'" + outputString + "' (" + outputString.length() + " bits)\n");
+       System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress(outputString) + "'\n"); /*
+       */ System.out.println("----- Uncompressed text w/ writing -----\n'" + uncompressedString + "'\n"); /*
+        System.out.println("Volume gain = " + new DecimalFormat("#.#").format(huffman.getVolumeGain()) + "%.\n");*/
 
         return 0;
     }

@@ -17,7 +17,7 @@ public class HuffmanIO {
             }
             bitCounter++;
         }
-
+        // here we lost the end 0
         return bitSet.toByteArray();
     }
 
@@ -50,6 +50,7 @@ public class HuffmanIO {
             }
 
             byte[] bytesArray = binaryStringToBytesArray(huffmanAttributes.getCompressedString());
+            fos.write(huffmanAttributes.getCompressedString().length());
             fos.write(bytesArray.length);
             fos.write(bytesArray);
 
@@ -75,15 +76,19 @@ public class HuffmanIO {
                 charactersFrequency.put(character, frequency);
             }
 
-            int stringSize = fis.read();
-            byte[] readBytes = new byte[stringSize];
+            int compressedStringSize = fis.read();
+            int bytesArraySize = fis.read();
+            byte[] readBytes = new byte[bytesArraySize];
 
-            for (int i = 0; i < stringSize; i++) {
+            for (int i = 0; i < bytesArraySize; i++) {
                 readBytes[i] = (byte) fis.read();
             }
 
-            String compressedString = bytesArrayToBinaryString(readBytes);
-            huffmanAttributes = new HuffmanAttributes(charactersFrequency, compressedString);
+            StringBuilder compressedString = new StringBuilder(bytesArrayToBinaryString(readBytes));
+            compressedString.append("0".repeat(Math.max(0, compressedStringSize - compressedString.length())));
+
+            //TODO : add zeros
+            huffmanAttributes = new HuffmanAttributes(charactersFrequency, compressedString.toString());
 
         } catch (IOException e) {
             e.printStackTrace();

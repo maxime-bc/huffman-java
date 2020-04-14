@@ -32,7 +32,6 @@ public class Huffman {
         generateHuffmanNodes(this.charactersFrequency);
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
-        printCharactersOccurrenceAndCode();
     }
 
     /**
@@ -224,7 +223,7 @@ public class Huffman {
     /**
      *
      */
-    private String binaryStringCompleteZeros(String str) {
+    public static String binaryStringCompleteZeros(String str) {
 
         int byteSize = 8;
         StringBuilder compressedString = new StringBuilder(str);
