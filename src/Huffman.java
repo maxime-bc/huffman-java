@@ -5,13 +5,11 @@ import java.util.PriorityQueue;
 public class Huffman {
 
     private static final int ETX = 3; //End of text character used as EOF
-    PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
-    HashMap<Character, String> charactersCode = new HashMap<>();
-    HashMap<Character, Integer> charactersFrequency = new HashMap<>();
+    private final PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
+    private final HashMap<Character, String> charactersCode = new HashMap<>();
+    private final HashMap<Character, Integer> charactersFrequency;
 
-    String text;
-    String compressedText = "";
-    String uncompressedText = "";
+    private String text;
 
     /**
      * Generate an Huffman tree with the text given in input.
@@ -22,7 +20,16 @@ public class Huffman {
 
     public Huffman(String text) {
         this.text = addExtChar(text);
-        generateHuffmanNodes();
+        this.charactersFrequency = getCharactersOccurrences(this.text);
+        generateHuffmanNodes(this.charactersFrequency);
+        generateTree();
+        generateCharactersCode(huffmanNodes.peek(), "");
+        printCharactersOccurrenceAndCode();
+    }
+
+    public Huffman(HashMap<Character, Integer> charactersFrequency) {
+        this.charactersFrequency = charactersFrequency;
+        generateHuffmanNodes(this.charactersFrequency);
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
         printCharactersOccurrenceAndCode();
@@ -48,9 +55,7 @@ public class Huffman {
      * Generate a node for each character and add all the nodes to the priority queue.
      */
 
-    private void generateHuffmanNodes() {
-
-        charactersFrequency = getCharactersOccurrences(text);
+    private void generateHuffmanNodes(HashMap<Character, Integer> charactersFrequency) {
 
         for (Map.Entry<Character, Integer> entry : charactersFrequency.entrySet()) {
             char character = entry.getKey();
@@ -163,13 +168,10 @@ public class Huffman {
 
     public String compress() {
         StringBuilder compressedStringBuilder = new StringBuilder();
-
         for (int i = 0; i < text.length(); i++) {
             compressedStringBuilder.append(charactersCode.get(text.charAt(i)));
         }
-
-        compressedText = compressedStringBuilder.toString();
-        return compressedText;
+        return binaryStringCompleteZeros(compressedStringBuilder.toString());
     }
 
     /**
@@ -178,17 +180,17 @@ public class Huffman {
      * @return Uncompressed text.
      */
 
-    public String uncompress() {
+    public String uncompress(String compressedString) {
         StringBuilder uncompressedStringBuilder = new StringBuilder();
         HuffmanNode rootNode = huffmanNodes.peek();
 
-        for (int i = 0; i < compressedText.length(); ) {
+        for (int i = 0; i < compressedString.length(); ) {
 
             HuffmanNode currentNode = rootNode;
 
-            while (currentNode.leftChild != null && currentNode.rightChild != null && i < compressedText.length()) {
+            while (currentNode.leftChild != null && currentNode.rightChild != null && i < compressedString.length()) {
 
-                if (compressedText.charAt(i) == '1') {
+                if (compressedString.charAt(i) == '1') {
                     currentNode = currentNode.rightChild;
                 } else {
                     currentNode = currentNode.leftChild;
@@ -205,19 +207,36 @@ public class Huffman {
             uncompressedStringBuilder.append(currentNode.character);
         }
 
-        uncompressedText = uncompressedStringBuilder.toString();
-        return uncompressedText;
+        return uncompressedStringBuilder.toString();
     }
 
-    /**
-     * Computes the volume gain from compression with the Huffman algorithm.
-     *
-     * @return A percentage representing the compression gain.
-     */
+//    /**
+//     * Computes the volume gain from compression with the Huffman algorithm.
+//     *
+//     * @return A percentage representing the compression gain.
+//     */
 
-    public double getVolumeGain() {
-        double textBitsSize = (text.length()) * Character.BYTES * 8.0;
-        return (1 - ((compressedText.length()) / textBitsSize)) * 100;
+//    public double getVolumeGain() {
+//        double textBitsSize = (text.length()) * Character.BYTES * 8.0;
+//        return (1 - ((compressedText.length()) / textBitsSize)) * 100;
+//    }
+
+    /**
+     *
+     */
+    private String binaryStringCompleteZeros(String str) {
+
+        int byteSize = 8;
+        StringBuilder compressedString = new StringBuilder(str);
+        if ((compressedString.length() % byteSize) != 0) {
+            int zerosToAdd = byteSize - (compressedString.length() % byteSize);
+            compressedString.append("0".repeat(Math.max(0, zerosToAdd)));
+        }
+        return compressedString.toString();
+    }
+
+    public HashMap<Character, Integer> getCharactersFrequency() {
+        return this.charactersFrequency;
     }
 }
 

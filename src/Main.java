@@ -1,8 +1,6 @@
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
-import java.util.BitSet;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
@@ -66,14 +64,11 @@ class Main implements Callable<Integer> {
         Huffman huffman = new Huffman(inputString);
         outputString = huffman.compress();
 
-        StringBuilder compressedString = new StringBuilder("11110000111100001111");
-        if ((compressedString.length() % 8) != 0) {
-            int tmp = compressedString.length() % 8;
-            compressedString.append("0".repeat(Math.max(0, 8 - tmp)));
-        }
-
-        HuffmanCodesIO.writeHuffmanCharactersFrequency(huffman.charactersFrequency, compressedString.toString(), "test");
-        HuffmanCodesIO.readHuffmanCharactersFrequency("test");
+//        HuffmanIO.writeHuffman(new HuffmanAttributes(huffman.getCharactersFrequency(), outputString), "test");
+//        HuffmanAttributes readHuffmanAttributes = HuffmanIO.readHuffman("test");
+//
+//        Huffman huffman2 = new Huffman(readHuffmanAttributes.getCharactersFrequency());
+//        String uncompressedString = huffman2.uncompress(readHuffmanAttributes.getCompressedString());
 
         // Print result in stdout
         System.out.println("----- Raw text -----\n'" + inputString
@@ -81,21 +76,9 @@ class Main implements Callable<Integer> {
         // we add 1 to input string size because Huffman adds a EOF char before compressing the string
         System.out.println("----- Compressed text -----\n'" + outputString
                 + "' (" + outputString.length() + " bits)\n");
-        System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress() + "'\n");
-        System.out.println("Volume gain = " + new DecimalFormat("#.#")
-                .format(huffman.getVolumeGain()) + "%.\n");
+        System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress(outputString) + "'\n");
+        //System.out.println("Volume gain = " + new DecimalFormat("#.#").format(huffman.getVolumeGain()) + "%.\n");
 
         return 0;
     }
-
-    private static BitSet fromString(String binary) {
-        BitSet bitset = new BitSet(binary.length());
-        for (int i = 0; i < binary.length(); i++) {
-            if (binary.charAt(i) == '1') {
-                bitset.set(i);
-            }
-        }
-        return bitset;
-    }
-
 }
