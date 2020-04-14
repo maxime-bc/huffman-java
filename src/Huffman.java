@@ -171,7 +171,7 @@ public class Huffman {
             compressedStringBuilder.append(charactersCode.get(text.charAt(i)));
         }
         // Useless ???
-        return binaryStringCompleteZeros(compressedStringBuilder.toString());
+        return compressedStringBuilder.toString();
     }
 
     /**
@@ -220,20 +220,6 @@ public class Huffman {
 //        double textBitsSize = (text.length()) * Character.BYTES * 8.0;
 //        return (1 - ((compressedText.length()) / textBitsSize)) * 100;
 //    }
-
-    /**
-     *
-     */
-    public static String binaryStringCompleteZeros(String str) {
-
-        int byteSize = 8;
-        StringBuilder compressedString = new StringBuilder(str);
-        if ((compressedString.length() % byteSize) != 0) {
-            int zerosToAdd = byteSize - (compressedString.length() % byteSize);
-            compressedString.append("0".repeat(Math.max(0, zerosToAdd)));
-        }
-        return compressedString.toString();
-    }
 
     public HashMap<Character, Integer> getCharactersFrequency() {
         return this.charactersFrequency;

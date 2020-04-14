@@ -48,7 +48,6 @@ public class HuffmanIO {
 
             byte[] bytesArray = binaryStringToBytesArray(huffmanAttributes.getCompressedString());
             dos.writeInt(huffmanAttributes.getCompressedString().length());
-            dos.writeInt(bytesArray.length);
             dos.write(bytesArray);
 
         } catch (IOException e) {
@@ -63,7 +62,6 @@ public class HuffmanIO {
         try (DataInputStream dis = new DataInputStream(new FileInputStream(filename))) {
 
             HashMap<Character, Integer> charactersFrequency = new HashMap<>();
-
             int mapSize = dis.readInt();
 
             for (int i = 0; i < mapSize; i++) {
@@ -73,12 +71,7 @@ public class HuffmanIO {
             }
 
             int compressedStringSize = dis.readInt();
-            int bytesArraySize = dis.readInt();
-            byte[] readBytes = new byte[bytesArraySize];
-
-            for (int i = 0; i < bytesArraySize; i++) {
-                readBytes[i] = dis.readByte();
-            }
+            byte[] readBytes = dis.readAllBytes();
 
             StringBuilder compressedString = new StringBuilder(bytesArrayToBinaryString(readBytes));
             compressedString.append("0".repeat(Math.max(0, compressedStringSize - compressedString.length())));
