@@ -75,8 +75,8 @@ class Main implements Callable<Integer> {
 /*        System.out.println("----- Raw text -----\n'" + inputString + "' (" + (inputString.length() + 1) * Character.BYTES * 8 + " bits)\n");
         // we add 1 to input string size because Huffman adds a EOF char before compressing the string
         System.out.println("----- Compressed text -----\n'" + outputString + "' (" + outputString.length() + " bits)\n");
-       System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress(outputString) + "'\n"); /*
-       */ System.out.println("----- Uncompressed text w/ writing -----\n'" + uncompressedString + "'\n"); /*
+       System.out.println("----- Uncompressed text -----\n'" + huffman.uncompress(outputString) + "'\n");
+      */  System.out.println("----- Uncompressed text w/ writing -----\n'" + uncompressedString + "'\n"); /*
         System.out.println("Volume gain = " + new DecimalFormat("#.#").format(huffman.getVolumeGain()) + "%.\n");*/
 
         return 0;

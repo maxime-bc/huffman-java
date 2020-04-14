@@ -1,6 +1,4 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,20 +37,19 @@ public class HuffmanIO {
 
     public static void writeHuffman(HuffmanAttributes huffmanAttributes, String filename) {
 
-        try {
-            FileOutputStream fos = new FileOutputStream(filename);
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(filename))) {
 
-            fos.write(huffmanAttributes.getCharactersFrequency().size());
+            dos.writeInt(huffmanAttributes.getCharactersFrequency().size());
 
             for (Map.Entry<Character, Integer> entry : huffmanAttributes.getCharactersFrequency().entrySet()) {
-                fos.write(entry.getKey());
-                fos.write(entry.getValue());
+                dos.writeChar(entry.getKey());
+                dos.writeInt(entry.getValue());
             }
 
             byte[] bytesArray = binaryStringToBytesArray(huffmanAttributes.getCompressedString());
-            fos.write(huffmanAttributes.getCompressedString().length());
-            fos.write(bytesArray.length);
-            fos.write(bytesArray);
+            dos.writeInt(huffmanAttributes.getCompressedString().length());
+            dos.writeInt(bytesArray.length);
+            dos.write(bytesArray);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,31 +60,29 @@ public class HuffmanIO {
 
         HuffmanAttributes huffmanAttributes = null;
 
-        try {
-            FileInputStream fis = new FileInputStream(filename);
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(filename))) {
+
             HashMap<Character, Integer> charactersFrequency = new HashMap<>();
 
-            int mapSize = fis.read();
+            int mapSize = dis.readInt();
 
             for (int i = 0; i < mapSize; i++) {
-
-                char character = (char) fis.read();
-                int frequency = fis.read();
+                char character = dis.readChar();
+                int frequency = dis.readInt();
                 charactersFrequency.put(character, frequency);
             }
 
-            int compressedStringSize = fis.read();
-            int bytesArraySize = fis.read();
+            int compressedStringSize = dis.readInt();
+            int bytesArraySize = dis.readInt();
             byte[] readBytes = new byte[bytesArraySize];
 
             for (int i = 0; i < bytesArraySize; i++) {
-                readBytes[i] = (byte) fis.read();
+                readBytes[i] = dis.readByte();
             }
 
             StringBuilder compressedString = new StringBuilder(bytesArrayToBinaryString(readBytes));
             compressedString.append("0".repeat(Math.max(0, compressedStringSize - compressedString.length())));
 
-            //TODO : add zeros
             huffmanAttributes = new HuffmanAttributes(charactersFrequency, compressedString.toString());
 
         } catch (IOException e) {

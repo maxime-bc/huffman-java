@@ -170,6 +170,7 @@ public class Huffman {
         for (int i = 0; i < text.length(); i++) {
             compressedStringBuilder.append(charactersCode.get(text.charAt(i)));
         }
+        // Useless ???
         return binaryStringCompleteZeros(compressedStringBuilder.toString());
     }
 
