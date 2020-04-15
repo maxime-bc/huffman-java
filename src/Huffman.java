@@ -165,13 +165,12 @@ public class Huffman {
      * @return Compressed text.
      */
 
-    public String compress() {
+    public HuffmanAttributes compress() {
         StringBuilder compressedStringBuilder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
             compressedStringBuilder.append(charactersCode.get(text.charAt(i)));
         }
-        // Useless ???
-        return compressedStringBuilder.toString();
+        return new HuffmanAttributes(charactersFrequency, compressedStringBuilder.toString());
     }
 
     /**
@@ -210,19 +209,15 @@ public class Huffman {
         return uncompressedStringBuilder.toString();
     }
 
-//    /**
-//     * Computes the volume gain from compression with the Huffman algorithm.
-//     *
-//     * @return A percentage representing the compression gain.
-//     */
+    /**
+     * Computes the volume gain from compression with the Huffman algorithm.
+     *
+     * @return A percentage representing the compression gain.
+     */
 
-//    public double getVolumeGain() {
-//        double textBitsSize = (text.length()) * Character.BYTES * 8.0;
-//        return (1 - ((compressedText.length()) / textBitsSize)) * 100;
-//    }
-
-    public HashMap<Character, Integer> getCharactersFrequency() {
-        return this.charactersFrequency;
+    public double getVolumeGain(String originalString, String compressedString) {
+        double textBitsSize = (originalString.length()) * Character.BYTES * 8.0;
+        return (1 - ((compressedString.length()) / textBitsSize)) * 100;
     }
 }
 

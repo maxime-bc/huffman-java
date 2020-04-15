@@ -35,9 +35,9 @@ public class HuffmanIO {
         return binaryStringBuilder.toString();
     }
 
-    public static void writeHuffman(HuffmanAttributes huffmanAttributes, String filename) {
+    public static void writeHuffmanFile(File file, HuffmanAttributes huffmanAttributes) {
 
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(filename))) {
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(file.getPath()))) {
 
             dos.writeInt(huffmanAttributes.getCharactersFrequency().size());
 
@@ -55,11 +55,11 @@ public class HuffmanIO {
         }
     }
 
-    public static HuffmanAttributes readHuffman(String filename) {
+    public static HuffmanAttributes readHuffmanFile(File file) {
 
         HuffmanAttributes huffmanAttributes = null;
 
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(filename))) {
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(file.getPath()))) {
 
             HashMap<Character, Integer> charactersFrequency = new HashMap<>();
             int mapSize = dis.readInt();
@@ -83,5 +83,36 @@ public class HuffmanIO {
         }
 
         return huffmanAttributes;
+    }
+
+    public static String readFile(File file) {
+
+        String text = null;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file.getPath()))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+
+            while (line != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(System.lineSeparator());
+                line = bufferedReader.readLine();
+            }
+
+            text = stringBuilder.toString();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return text;
+
+    }
+
+    public static void writeFile(File file, String text) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getPath()))) {
+            bufferedWriter.write(text);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
