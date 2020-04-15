@@ -1,6 +1,6 @@
 # Huffman coding in java
 
-Compress a string or a text file using Huffman coding.
+Compress a string, or a text file using Huffman coding.
 
 [Subject](http://cedric.cnam.fr/~soutile/SD/Projet_Huffman.pdf)
 
@@ -15,11 +15,12 @@ java Main
 ## Usage
  
  ```bash
-Main (-f=<inputFile> | -s=<inputString>) [-hV]
+Main [-ehuV] -i=<inputFile> -o=<outputFile>
 
-  -s, --string=<inputString>  Take a string as an input.
-  -f, --file=<inputFile>      Take a text file as an input.  
-  -h, --help                  Show this help message and exit.
-  -V, --version               Print version information and exit.
- 
+  -e, --extra               Print compression rate, input and output file sizes.
+  -h, --help                Show this help message and exit.
+  -i, --input=<inputFile>   Input file.
+  -o, --output=<outputFile> Output file.
+  -u, --uncompress          Uncompress input file into output file.
+  -V, --version             Print version information and exit.
  ```

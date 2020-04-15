@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.concurrent.Callable;
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = "huffman-java 0.0.1",
-        description = "Compress a string or a text file using Huffman coding")
+        description = "Compress a string or a text file using Huffman coding.")
 class Main implements Callable<Integer> {
 
     public static void main(String[] args) {
@@ -16,16 +16,17 @@ class Main implements Callable<Integer> {
 
     // Command line options management with picocli
 
-    @CommandLine.Option(names = {"-i", "--input"}, required = true, description = "Input file")
+    @CommandLine.Option(names = {"-i", "--input"}, required = true, description = "Input file.")
     private File inputFile;
 
-    @CommandLine.Option(names = {"-o", "--output"}, required = true, description = "Output file")
+    @CommandLine.Option(names = {"-o", "--output"}, required = true, description = "Output file.")
     private File outputFile;
 
-    @CommandLine.Option(names = {"-u", "--uncompress"}, description = "Uncompress input file into output file")
+    @CommandLine.Option(names = {"-u", "--uncompress"}, description = "Uncompress input file into output file.")
     private boolean uncompressMode;
 
-    @CommandLine.Option(names = {"-e", "--extra"}, description = "Print compression rate, input and output file sizes")
+    @CommandLine.Option(names = {"-e", "--extra"},
+            description = "Print extra information (compression rate, input and output file sizes).")
     private boolean extra;
 
     @Override
@@ -35,7 +36,7 @@ class Main implements Callable<Integer> {
         HuffmanAttributes huffmanAttributes;
 
         if (uncompressMode) {
-            // Mode uncompress
+            /* Uncompress mode */
             huffmanAttributes = HuffmanIO.readHuffmanFile(inputFile);
             huffman = new Huffman(huffmanAttributes.getCharactersFrequency());
             String uncompressedString = huffman.uncompress(huffmanAttributes.getCompressedString());
@@ -48,7 +49,7 @@ class Main implements Callable<Integer> {
                                 huffmanAttributes.getCompressedString())) + " % compression rate.\n");
             }
         } else {
-            // Mode compress
+            /* Compress mode */
             String inputString = HuffmanIO.readFile(inputFile);
             huffman = new Huffman(inputString);
             huffmanAttributes = huffman.compress();

@@ -5,6 +5,13 @@ import java.util.Map;
 
 public class HuffmanIO {
 
+    /**
+     * Convert a binary string (only composed with 0 and 1) into a byte array.
+     *
+     * @param binaryString the binary string to convert into a byte array.
+     * @return the byte array resulting of the conversion.
+     */
+
     private static byte[] binaryStringToBytesArray(String binaryString) {
 
         BitSet bitSet = new BitSet(binaryString.length());
@@ -15,10 +22,15 @@ public class HuffmanIO {
             }
             bitCounter++;
         }
-        // here we lost the end 0
         return bitSet.toByteArray();
     }
 
+    /**
+     * Convert a byte array into a binary string (only composed with 0 and 1).
+     *
+     * @param bytesArray the byte array to convert into a binary string.
+     * @return the binary string resulting of the conversion.
+     */
     private static String bytesArrayToBinaryString(byte[] bytesArray) {
 
         int byteSize = 8;
@@ -34,6 +46,13 @@ public class HuffmanIO {
         }
         return binaryStringBuilder.toString();
     }
+
+    /**
+     * Store into a file the characters frequency and the compressed string
+     *
+     * @param file              the file where data is going to be stored
+     * @param huffmanAttributes attributes from an huffman tree that we will need to uncompress the string
+     */
 
     public static void writeHuffmanFile(File file, HuffmanAttributes huffmanAttributes) {
 
@@ -54,6 +73,13 @@ public class HuffmanIO {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Read a file containing a compressed string and a dictionary of characters and their frequency.
+     *
+     * @param file the file to read
+     * @return the compressed string and the dictionary of characters and their frequency in an HuffmanAttributes class.
+     */
 
     public static HuffmanAttributes readHuffmanFile(File file) {
 
@@ -85,6 +111,13 @@ public class HuffmanIO {
         return huffmanAttributes;
     }
 
+    /**
+     * Read a text file
+     *
+     * @param file the file to read.
+     * @return the string read from the file.
+     */
+
     public static String readFile(File file) {
 
         String text = null;
@@ -107,6 +140,13 @@ public class HuffmanIO {
         return text;
 
     }
+
+    /**
+     * Write text into a file.
+     *
+     * @param file the file where the text is going to be written.
+     * @param text the text to write into the file.
+     */
 
     public static void writeFile(File file, String text) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getPath()))) {
