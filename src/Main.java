@@ -42,12 +42,14 @@ class Main implements Callable<Integer> {
             String uncompressedString = huffman.uncompress(huffmanAttributes.getCompressedString());
             HuffmanIO.writeFile(outputFile, uncompressedString);
             if (extra) {
+                huffman.printCharactersOccurrenceAndCode();
                 System.out.println("Input file size : " + inputFile.length() +
                         " bytes.\nOutput file size : " + outputFile.length() + " bytes.\n");
                 System.out.println(new DecimalFormat("#.#").
                         format(huffman.getVolumeGain(uncompressedString,
                                 huffmanAttributes.getCompressedString())) + " % compression rate.\n");
             }
+            System.out.println("Done ! Input uncompressed in " + outputFile);
         } else {
             /* Compress mode */
             String inputString = HuffmanIO.readFile(inputFile);
@@ -57,12 +59,14 @@ class Main implements Callable<Integer> {
                     new HuffmanAttributes(huffmanAttributes.getCharactersFrequency(),
                             huffmanAttributes.getCompressedString()));
             if (extra) {
+                huffman.printCharactersOccurrenceAndCode();
                 System.out.println("Input file size : " + inputFile.length() +
                         " bytes.\nOutput file size : " + outputFile.length() + " bytes.\n");
                 System.out.println(new DecimalFormat("#.#").
                         format(huffman.getVolumeGain(inputString,
                                 huffmanAttributes.getCompressedString())) + " % compression rate.\n");
             }
+            System.out.println("Done ! Input compressed in " + outputFile);
         }
         return 0;
     }

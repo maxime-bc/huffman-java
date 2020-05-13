@@ -24,7 +24,6 @@ public class Huffman {
         generateHuffmanNodes(this.charactersFrequency);
         generateTree();
         generateCharactersCode(huffmanNodes.peek(), "");
-        printCharactersOccurrenceAndCode();
     }
 
     public Huffman(HashMap<Character, Integer> charactersFrequency) {
@@ -114,12 +113,12 @@ public class Huffman {
      * Print characters presents in the input string, their ascii code, their occurrence number and their generated code.
      */
 
-    private void printCharactersOccurrenceAndCode() {
-        System.out.println("char (ascii value) -> occurrence -> code");
+    public void printCharactersOccurrenceAndCode() {
+        System.out.printf("\n     %-10s %-20s %-20s %-30s%n", "char", "(ascii value)", "occurrence", "code");
         charactersFrequency.forEach((character, occurrence) ->
-                System.out.println("'" + character + "' (" + (int) character + ")" +
-                        " -> " + occurrence + " -> " + charactersCode.get(character)));
-        System.out.println("\n");
+                System.out.printf("     %-10s %-20d %-20s %-30s%n",
+                        character, (int) character, occurrence, charactersCode.get(character)));
+        System.out.print("\n");
     }
 
     /**
