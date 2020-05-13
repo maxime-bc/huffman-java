@@ -19,9 +19,9 @@ class HuffmanNodeComparator implements Comparator<HuffmanNode> {
 
     public int compare(HuffmanNode x, HuffmanNode y) {
         // If occurrences are equals, we compare character's ascii code.
-        if (x.occurrence == y.occurrence) {
-            return (int) x.character - (int) y.character;
+        if (x.getFrequency() == y.getFrequency()) {
+            return (int) x.getCharacter() - (int) y.getCharacter();
         }
-        return x.occurrence - y.occurrence;
+        return x.getFrequency() - y.getFrequency();
     }
 }

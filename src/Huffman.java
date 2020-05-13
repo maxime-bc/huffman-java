@@ -19,7 +19,7 @@ public class Huffman {
      */
 
     public Huffman(String text) {
-        this.text = addExtChar(text);
+        this.text = text += (char) ETX;
         this.charactersFrequency = getCharactersOccurrences(this.text);
         generateHuffmanNodes(this.charactersFrequency);
         generateTree();
@@ -35,35 +35,13 @@ public class Huffman {
     }
 
     /**
-     * Adds the character ETX (End of TeXt) to a string, marking its end.
-     *
-     * @param str the string for which we need to add the ETX character.
-     * @return the string with the EXT character added.
-     */
-
-    private String addExtChar(String str) {
-        int len = str.length();
-        char[] updatedArr = new char[len + 1];
-        str.getChars(0, len, updatedArr, 0);
-        updatedArr[len] = (char) ETX;
-        str.getChars(len, len, updatedArr, len + 1);
-        return new String(updatedArr);
-    }
-
-    /**
      * Generate a node for each character and add all the nodes to the priority queue.
      */
 
     private void generateHuffmanNodes(HashMap<Character, Integer> charactersFrequency) {
 
         for (Map.Entry<Character, Integer> entry : charactersFrequency.entrySet()) {
-            char character = entry.getKey();
-            int occurrence = entry.getValue();
-
-            HuffmanNode huffmanNode = new HuffmanNode();
-            huffmanNode.occurrence = occurrence;
-            huffmanNode.character = character;
-            huffmanNodes.add(huffmanNode);
+            huffmanNodes.add(new HuffmanNode(entry.getKey(), entry.getValue(), null, null));
         }
     }
 
@@ -100,27 +78,12 @@ public class Huffman {
      */
 
     private void generateTree() {
-        HuffmanNodeComparator huffmanNodeComparator = new HuffmanNodeComparator();
 
         while (huffmanNodes.size() > 1) {
-
             HuffmanNode childOne = huffmanNodes.poll();
             HuffmanNode childTwo = huffmanNodes.poll();
-            HuffmanNode parent = new HuffmanNode();
-
-            int comparisonRes = huffmanNodeComparator.compare(childOne, childTwo);
-            if (comparisonRes > 0) {
-                parent.leftChild = childTwo;
-                parent.rightChild = childOne;
-            } else {
-                parent.leftChild = childOne;
-                parent.rightChild = childTwo;
-            }
-
-            parent.character = parent.rightChild.character;
-            parent.occurrence = childOne.occurrence + childTwo.occurrence;
-
-            huffmanNodes.add(parent);
+            huffmanNodes.add(new HuffmanNode(childTwo.getCharacter(),
+                    childOne.getFrequency() + childTwo.getFrequency(), childOne, childTwo));
         }
     }
 
@@ -133,16 +96,16 @@ public class Huffman {
 
     private void generateCharactersCode(HuffmanNode huffmanNode, String code) {
         if (huffmanNode != null) {
-            if (huffmanNode.rightChild != null) {
-                generateCharactersCode(huffmanNode.rightChild, code + "1");
+            if (huffmanNode.getRightChild() != null) {
+                generateCharactersCode(huffmanNode.getRightChild(), code + "1");
             }
 
-            if (huffmanNode.leftChild != null) {
-                generateCharactersCode(huffmanNode.leftChild, code + "0");
+            if (huffmanNode.getLeftChild() != null) {
+                generateCharactersCode(huffmanNode.getLeftChild(), code + "0");
             }
 
-            if (huffmanNode.leftChild == null && huffmanNode.rightChild == null) {
-                charactersCode.put(huffmanNode.character, code);
+            if (huffmanNode.getLeftChild() == null && huffmanNode.getRightChild() == null) {
+                charactersCode.put(huffmanNode.getCharacter(), code);
             }
         }
     }
@@ -187,23 +150,23 @@ public class Huffman {
 
             HuffmanNode currentNode = rootNode;
 
-            while (currentNode.leftChild != null && currentNode.rightChild != null && i < compressedString.length()) {
+            while (currentNode.getLeftChild() != null && currentNode.getRightChild() != null && i < compressedString.length()) {
 
                 if (compressedString.charAt(i) == '1') {
-                    currentNode = currentNode.rightChild;
+                    currentNode = currentNode.getRightChild();
                 } else {
-                    currentNode = currentNode.leftChild;
+                    currentNode = currentNode.getLeftChild();
                 }
 
                 i++;
             }
 
             // if the character EXT is read, we exit the loop because the end of the string was reached.
-            if ((int) currentNode.character == ETX) {
+            if ((int) currentNode.getCharacter() == ETX) {
                 break;
             }
 
-            uncompressedStringBuilder.append(currentNode.character);
+            uncompressedStringBuilder.append(currentNode.getCharacter());
         }
 
         return uncompressedStringBuilder.toString();
