@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -5,53 +6,33 @@ import java.util.PriorityQueue;
 public class Huffman {
 
     private static final int ETX = 3; //End of text character used as EOF
-    private final PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
-    private final HashMap<Character, String> charactersCode = new HashMap<>();
-    private final HashMap<Character, Integer> charactersFrequency;
-
-    private String text;
 
     /**
-     * Generate an Huffman tree with the text given in input.
-     * The character used to mark the end of a file is EXT (ascii code = 3).
+     * Generate a priority queue with nodes containing a character and its frequency.
      *
-     * @param text input string on which the Huffman tree will be based.
+     * @param charactersFrequency A dictionary containing all characters and their frequency to be added to the queue.
+     * @return The priority queue created with all the nodes.
      */
 
-    public Huffman(String text) {
-        this.text = text += (char) ETX;
-        this.charactersFrequency = getCharactersOccurrences(this.text);
-        generateHuffmanNodes(this.charactersFrequency);
-        generateTree();
-        generateCharactersCode(huffmanNodes.peek(), "");
-    }
+    private static PriorityQueue<HuffmanNode> generateHuffmanNodes(HashMap<Character, Integer> charactersFrequency) {
 
-    public Huffman(HashMap<Character, Integer> charactersFrequency) {
-        this.charactersFrequency = charactersFrequency;
-        generateHuffmanNodes(this.charactersFrequency);
-        generateTree();
-        generateCharactersCode(huffmanNodes.peek(), "");
-    }
-
-    /**
-     * Generate a node for each character and add all the nodes to the priority queue.
-     */
-
-    private void generateHuffmanNodes(HashMap<Character, Integer> charactersFrequency) {
+        PriorityQueue<HuffmanNode> huffmanNodes = new PriorityQueue<>(new HuffmanNodeComparator());
 
         for (Map.Entry<Character, Integer> entry : charactersFrequency.entrySet()) {
             huffmanNodes.add(new HuffmanNode(entry.getKey(), entry.getValue(), null, null));
         }
+
+        return huffmanNodes;
     }
 
     /**
-     * Obtains the number of occurrences of each character constituting a string.
+     * Obtains the number of occurrences for each character of a given string.
      *
-     * @param string String for which we need to determine the occurrences of each of its characters.
-     * @return An association between each character and the number of its occurrences in the input string.
+     * @param string A string for which we need to determine the occurrences of each of its characters.
+     * @return A dictionary associating each character to its occurrences in the string.
      */
 
-    private HashMap<Character, Integer> getCharactersOccurrences(String string) {
+    private static HashMap<Character, Integer> getCharactersOccurrences(String string) {
 
         HashMap<Character, Integer> map = new HashMap<>();
 
@@ -68,15 +49,17 @@ public class Huffman {
     }
 
     /**
-     * Generates a tree with all the nodes stored inside the priority queue.
+     * Generates an Huffman tree.
      * <p>
-     * This function collects the two Huffman nodes with the smallest occurrence
-     * and with the smallest ascii codes from the priority queue.
-     * Then, a new parent node for these two nodes is created and added to the priority queue,
+     * This function collects the two smallest Huffman nodes from the queue.
+     * Then, a new parent node for these two nodes is created and added to queue,
      * until only one node remains, the root of the Huffman tree.
+     *
+     * @param huffmanNodes Queue containing all nodes.
+     * @return The generated Huffman tree.
      */
 
-    private void generateTree() {
+    private static PriorityQueue<HuffmanNode> generateHuffmanTree(PriorityQueue<HuffmanNode> huffmanNodes) {
 
         while (huffmanNodes.size() > 1) {
             HuffmanNode childOne = huffmanNodes.poll();
@@ -84,6 +67,8 @@ public class Huffman {
             huffmanNodes.add(new HuffmanNode(childTwo.getCharacter(),
                     childOne.getFrequency() + childTwo.getFrequency(), childOne, childTwo));
         }
+
+        return huffmanNodes;
     }
 
     /**
@@ -91,30 +76,37 @@ public class Huffman {
      *
      * @param huffmanNode Root of the Huffman tree.
      * @param code        Code being generated.
+     * @return A dictionary associating a character with its code.
      */
 
-    private void generateCharactersCode(HuffmanNode huffmanNode, String code) {
+    private static HashMap<Character, String> generateCharactersCode(HuffmanNode huffmanNode, String code) {
+        HashMap<Character, String> charactersCode = new HashMap<>();
+
         if (huffmanNode != null) {
             if (huffmanNode.getRightChild() != null) {
-                generateCharactersCode(huffmanNode.getRightChild(), code + "1");
+                charactersCode.putAll(generateCharactersCode(huffmanNode.getRightChild(), code + "1"));
             }
 
             if (huffmanNode.getLeftChild() != null) {
-                generateCharactersCode(huffmanNode.getLeftChild(), code + "0");
+                charactersCode.putAll(generateCharactersCode(huffmanNode.getLeftChild(), code + "0"));
             }
 
             if (huffmanNode.getLeftChild() == null && huffmanNode.getRightChild() == null) {
                 charactersCode.put(huffmanNode.getCharacter(), code);
             }
         }
+        return charactersCode;
     }
 
     /**
-     * Print characters presents in the input string, their ascii code, their occurrence number and their generated code.
+     * Print each character with its ascii code, occurrence and code.
+     *
+     * @param charactersFrequency A dictionary associating a character with its frequency.
+     * @param charactersCode      A dictionary associating a character with its code.
      */
 
-    public void printCharactersOccurrenceAndCode() {
-        System.out.printf("\n     %-10s %-20s %-20s %-30s%n", "char", "(ascii value)", "occurrence", "code");
+    private static void printCharactersOccurrenceAndCode(HashMap<Character, Integer> charactersFrequency, HashMap<Character, String> charactersCode) {
+        System.out.printf("\n     %-10s %-20s %-20s %-30s%n", "char", "ASCII value", "frequency", "code");
         charactersFrequency.forEach((character, occurrence) ->
                 System.out.printf("     %-10s %-20d %-20s %-30s%n",
                         character, (int) character, occurrence, charactersCode.get(character)));
@@ -122,28 +114,77 @@ public class Huffman {
     }
 
     /**
-     * Compress text using the Huffman tree.
+     * Computes the volume gain from a compression using the Huffman algorithm.
      *
-     * @return Compressed text.
+     * @param originalString   String before compression
+     * @param compressedString String after compression
      */
 
-    public HuffmanAttributes compress() {
+    private static void printVolumeGain(String originalString, String compressedString) {
+        double textBitsSize = (originalString.length()) * Character.BYTES * 8.0;
+        double volumeGain = (1 - ((compressedString.length()) / textBitsSize)) * 100;
+        System.out.println(new DecimalFormat("#.#").format(volumeGain) + " % compression rate.\n");
+    }
+
+    /**
+     * Compress text using the Huffman tree.
+     *
+     * @param stringToCompress The string to compress.
+     * @param verbose          If set to true, print extra information about compression
+     *                         (characters frequencies, codes, ascii values and compression gain, ...).
+     * @return Characters frequency and compressed string stored into an HuffmanAttributes class.
+     */
+
+    public static HuffmanAttributes compress(String stringToCompress, boolean verbose) {
+        HashMap<Character, Integer> charactersFrequency;
+        HashMap<Character, String> charactersCode;
+        PriorityQueue<HuffmanNode> huffmanNodes, huffmanTree;
         StringBuilder compressedStringBuilder = new StringBuilder();
-        for (int i = 0; i < text.length(); i++) {
-            compressedStringBuilder.append(charactersCode.get(text.charAt(i)));
+        String compressedString;
+
+        stringToCompress += (char) ETX;
+        charactersFrequency = getCharactersOccurrences(stringToCompress);
+        huffmanNodes = generateHuffmanNodes(charactersFrequency);
+        huffmanTree = generateHuffmanTree(huffmanNodes);
+
+        charactersCode = generateCharactersCode(huffmanTree.peek(), "");
+
+        for (int i = 0; i < stringToCompress.length(); i++) {
+            compressedStringBuilder.append(charactersCode.get(stringToCompress.charAt(i)));
         }
-        return new HuffmanAttributes(charactersFrequency, compressedStringBuilder.toString());
+
+        compressedString = compressedStringBuilder.toString();
+
+
+        if (verbose) {
+            printCharactersOccurrenceAndCode(charactersFrequency, charactersCode);
+            printVolumeGain(stringToCompress, compressedString);
+        }
+        return new HuffmanAttributes(charactersFrequency, compressedString);
     }
 
     /**
      * Uncompress text using the Huffman tree.
      *
-     * @return Uncompressed text.
+     * @param huffmanAttributes Characters frequency and compressed string stored into an HuffmanAttributes class.
+     * @param verbose           If set to true, print extra information about compression
+     *                          (characters frequencies, codes, ascii values and compression gain, ...).
+     * @return The uncompressed text.
      */
 
-    public String uncompress(String compressedString) {
+    public static String uncompress(HuffmanAttributes huffmanAttributes, boolean verbose) {
+        HashMap<Character, String> charactersCode;
+        HashMap<Character, Integer> charactersFrequency = huffmanAttributes.getCharactersFrequency();
+        PriorityQueue<HuffmanNode> huffmanNodes, huffmanTree;
         StringBuilder uncompressedStringBuilder = new StringBuilder();
-        HuffmanNode rootNode = huffmanNodes.peek();
+        String uncompressedString, compressedString = huffmanAttributes.getCompressedString();
+
+        huffmanNodes = generateHuffmanNodes(charactersFrequency);
+        huffmanTree = generateHuffmanTree(huffmanNodes);
+
+        charactersCode = generateCharactersCode(huffmanTree.peek(), "");
+
+        HuffmanNode rootNode = huffmanTree.peek();
 
         for (int i = 0; i < compressedString.length(); ) {
 
@@ -168,18 +209,14 @@ public class Huffman {
             uncompressedStringBuilder.append(currentNode.getCharacter());
         }
 
-        return uncompressedStringBuilder.toString();
-    }
+        uncompressedString = uncompressedStringBuilder.toString();
 
-    /**
-     * Computes the volume gain from compression with the Huffman algorithm.
-     *
-     * @return A percentage representing the compression gain.
-     */
+        if (verbose) {
+            printCharactersOccurrenceAndCode(charactersFrequency, charactersCode);
+            printVolumeGain(uncompressedString, compressedString);
+        }
 
-    public double getVolumeGain(String originalString, String compressedString) {
-        double textBitsSize = (originalString.length()) * Character.BYTES * 8.0;
-        return (1 - ((compressedString.length()) / textBitsSize)) * 100;
+        return uncompressedString;
     }
 }
 

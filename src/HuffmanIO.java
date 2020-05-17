@@ -8,8 +8,8 @@ public class HuffmanIO {
     /**
      * Convert a binary string (only composed with 0 and 1) into a byte array.
      *
-     * @param binaryString the binary string to convert into a byte array.
-     * @return the byte array resulting of the conversion.
+     * @param binaryString The binary string to convert into a byte array.
+     * @return The byte array resulting of the conversion.
      */
 
     private static byte[] binaryStringToBytesArray(String binaryString) {
@@ -28,8 +28,8 @@ public class HuffmanIO {
     /**
      * Convert a byte array into a binary string (only composed with 0 and 1).
      *
-     * @param bytesArray the byte array to convert into a binary string.
-     * @return the binary string resulting of the conversion.
+     * @param bytesArray The byte array to convert into a binary string.
+     * @return The binary string resulting of the conversion.
      */
     private static String bytesArrayToBinaryString(byte[] bytesArray) {
 
@@ -50,8 +50,8 @@ public class HuffmanIO {
     /**
      * Store into a file the characters frequency and the compressed string
      *
-     * @param file              the file where data is going to be stored
-     * @param huffmanAttributes attributes from an huffman tree that we will need to uncompress the string
+     * @param file              The file where data is going to be stored
+     * @param huffmanAttributes Attributes from an huffman tree that we will need to uncompress the string
      */
 
     public static void writeHuffmanFile(File file, HuffmanAttributes huffmanAttributes) {
@@ -77,8 +77,8 @@ public class HuffmanIO {
     /**
      * Read a file containing a compressed string and a dictionary of characters and their frequency.
      *
-     * @param file the file to read
-     * @return the compressed string and the dictionary of characters and their frequency in an HuffmanAttributes class.
+     * @param file The file to read
+     * @return The compressed string and the dictionary of characters and their frequency in an HuffmanAttributes class.
      */
 
     public static HuffmanAttributes readHuffmanFile(File file) {
@@ -114,8 +114,8 @@ public class HuffmanIO {
     /**
      * Read a text file
      *
-     * @param file the file to read.
-     * @return the string read from the file.
+     * @param file The file to read.
+     * @return The string read from the file.
      */
 
     public static String readFile(File file) {
@@ -144,8 +144,8 @@ public class HuffmanIO {
     /**
      * Write text into a file.
      *
-     * @param file the file where the text is going to be written.
-     * @param text the text to write into the file.
+     * @param file The file where the text is going to be written.
+     * @param text The text to write into the file.
      */
 
     public static void writeFile(File file, String text) {

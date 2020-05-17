@@ -32,42 +32,28 @@ class Main implements Callable<Integer> {
     @Override
     public Integer call() { // this method is called when the program is launched with valid parameters/options
 
-        Huffman huffman;
         HuffmanAttributes huffmanAttributes;
+
+        if (!inputFile.exists() || inputFile.isDirectory()) {
+            System.out.println("Error : file " + inputFile.toString() + " doesn't exists or is a directory.");
+            System.exit(1);
+        }
 
         if (uncompressMode) {
             /* Uncompress mode */
             huffmanAttributes = HuffmanIO.readHuffmanFile(inputFile);
-            huffman = new Huffman(huffmanAttributes.getCharactersFrequency());
-            String uncompressedString = huffman.uncompress(huffmanAttributes.getCompressedString());
+            String uncompressedString = Huffman.uncompress(huffmanAttributes, extra);
             HuffmanIO.writeFile(outputFile, uncompressedString);
-            if (extra) {
-                huffman.printCharactersOccurrenceAndCode();
-                System.out.println("Input file size : " + inputFile.length() +
-                        " bytes.\nOutput file size : " + outputFile.length() + " bytes.\n");
-                System.out.println(new DecimalFormat("#.#").
-                        format(huffman.getVolumeGain(uncompressedString,
-                                huffmanAttributes.getCompressedString())) + " % compression rate.\n");
-            }
-            System.out.println("Done ! Input uncompressed in " + outputFile);
         } else {
             /* Compress mode */
             String inputString = HuffmanIO.readFile(inputFile);
-            huffman = new Huffman(inputString);
-            huffmanAttributes = huffman.compress();
+            huffmanAttributes = Huffman.compress(inputString, extra);
             HuffmanIO.writeHuffmanFile(outputFile,
                     new HuffmanAttributes(huffmanAttributes.getCharactersFrequency(),
                             huffmanAttributes.getCompressedString()));
-            if (extra) {
-                huffman.printCharactersOccurrenceAndCode();
-                System.out.println("Input file size : " + inputFile.length() +
-                        " bytes.\nOutput file size : " + outputFile.length() + " bytes.\n");
-                System.out.println(new DecimalFormat("#.#").
-                        format(huffman.getVolumeGain(inputString,
-                                huffmanAttributes.getCompressedString())) + " % compression rate.\n");
-            }
-            System.out.println("Done ! Input compressed in " + outputFile);
+
         }
+        System.out.println("Done ! Input compressed in " + outputFile);
         return 0;
     }
 }
