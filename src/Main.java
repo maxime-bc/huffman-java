@@ -44,6 +44,7 @@ class Main implements Callable<Integer> {
             huffmanAttributes = HuffmanIO.readHuffmanFile(inputFile);
             String uncompressedString = Huffman.uncompress(huffmanAttributes, extra);
             HuffmanIO.writeFile(outputFile, uncompressedString);
+	    System.out.println("Done ! Input uncompressed in " + outputFile);
         } else {
             /* Compress mode */
             String inputString = HuffmanIO.readFile(inputFile);
@@ -51,9 +52,8 @@ class Main implements Callable<Integer> {
             HuffmanIO.writeHuffmanFile(outputFile,
                     new HuffmanAttributes(huffmanAttributes.getCharactersFrequency(),
                             huffmanAttributes.getCompressedString()));
-
+            System.out.println("Done ! Input compressed in " + outputFile);
         }
-        System.out.println("Done ! Input compressed in " + outputFile);
         return 0;
     }
 }
