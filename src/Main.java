@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.concurrent.Callable;
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = "huffman-java 0.0.1",
-        description = "Compress a string or a text file using Huffman coding.")
+        description = "Compress or uncompress text files using Huffman coding.")
 class Main implements Callable<Integer> {
 
     public static void main(String[] args) {
