@@ -1,6 +1,6 @@
 # Huffman coding in java
 
-Compress a text file using Huffman algorithm.
+Compress and uncompress a text file using Huffman algorithm.
 
 [Subject](http://cedric.cnam.fr/~soutile/SD/Projet_Huffman.pdf)
 
