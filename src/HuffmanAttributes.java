@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class HuffmanAttributes {
+public class HuffmanAttributes implements Serializable {
     private HashMap<Character, Integer> charactersFrequency;
     private String compressedString;
 

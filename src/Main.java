@@ -2,7 +2,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import java.io.*;
-import java.text.DecimalFormat;
 import java.util.concurrent.Callable;
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = "huffman-java 0.0.1",
@@ -41,18 +40,20 @@ class Main implements Callable<Integer> {
 
         if (uncompressMode) {
             /* Uncompress mode */
-            huffmanAttributes = HuffmanIO.readHuffmanFile(inputFile);
+            huffmanAttributes = (HuffmanAttributes) HuffmanIO.deserialize(inputFile);
+            if (huffmanAttributes == null) {
+                System.out.println("Error : invalid format for file `" + inputFile.toString() + '`');
+                System.exit(1);
+            }
             String uncompressedString = Huffman.uncompress(huffmanAttributes, extra);
             HuffmanIO.writeFile(outputFile, uncompressedString);
-	    System.out.println("Done ! Input uncompressed in " + outputFile);
+            System.out.println("Done ! Input uncompressed in `" + outputFile + '`');
         } else {
             /* Compress mode */
             String inputString = HuffmanIO.readFile(inputFile);
             huffmanAttributes = Huffman.compress(inputString, extra);
-            HuffmanIO.writeHuffmanFile(outputFile,
-                    new HuffmanAttributes(huffmanAttributes.getCharactersFrequency(),
-                            huffmanAttributes.getCompressedString()));
-            System.out.println("Done ! Input compressed in " + outputFile);
+            HuffmanIO.serialize(huffmanAttributes, outputFile);
+            System.out.println("Done ! Input compressed in `" + outputFile + '`');
         }
         return 0;
     }
